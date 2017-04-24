@@ -113,11 +113,40 @@ class SamsungTv(object):
         return self
 
     # Function to send keys
-    def sendKey(self, skey, appstring):
+    def sendKey(self, skey):
         messagepart3 = chr(0x00) + chr(0x00) + chr(0x00) + chr(len(base64.b64encode(skey))) + chr(0x00) + base64.b64encode(skey)
-        part3 = chr(0x00) + chr(len(appstring)) + chr(0x00) \
-        + appstring + chr(len(messagepart3)) + chr(0x00) + messagepart3
+        part3 = chr(0x00) + chr(len(tvappstring)) + chr(0x00) \
+        + tvappstring + chr(len(messagepart3)) + chr(0x00) + messagepart3
         self.sock.send(part3)
+
+    def powerOn(self):
+        self.sendKey("KEY_POWERON")
+
+    def powerOff(self):
+        self.sendKey("KEY_POWEROFF")
+
+    def sendHdmi(self):
+        self.sendKey("KEY_HDMI")
+
+    def sendTv(self):
+        self.sendKey("KEY_DTV")
+
+    def sendComponent1(self):
+        self.sendKey("KEY_COMPONENT1")
+
+    def volup(self):
+        self.sendKey("KEY_VOLUP")
+
+    def voldown(self):
+        self.sendKey("KEY_VOLDOWN")
+
+    def voldown(self):
+        self.sendKey("KEY_VOLDOWN")
+
+    def sendAbcKids(self):
+        self.sendKey("KEY_2")
+        self.sendKey("KEY_3")
+        self.sendKey("KEY_ENTER")
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.sock.close()
