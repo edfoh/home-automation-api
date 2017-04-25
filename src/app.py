@@ -22,7 +22,6 @@ app.permanent_session_lifetime = timedelta(seconds=15)
 tv_functions = {
     'hdmi': lambda tv: tv.sendHdmi(),
     'tv': lambda tv: tv.sendTv(),
-    'poweron': lambda tv: tv.powerOn(),
     'poweroff': lambda tv: tv.powerOff()
 }
 
