@@ -27,6 +27,12 @@ API that sends signals to television via IP to change channels, input sources an
 1. Remove it from the [requirements.in](requirements.in) file
 1. Run `./install.sh`
 
+### Setting up config
+
+you need to copy the [template.env](template.env) to a local `.env`file, which contains the details required to run the application. This file is git-ignored and will not / should not be checked into source control.
+
+- run `cp template.env .env`
+
 ### Running locally
 
 - run `./src/app.py`
