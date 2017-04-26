@@ -5,7 +5,8 @@ sys.path.insert(0, './lib')
 import os
 import socket
 from datetime import timedelta
-from flask import Flask, jsonify, make_response, HTTPBasicAuth
+from flask import Flask, jsonify, make_response
+from flask_httpauth import HTTPBasicAuth
 
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
