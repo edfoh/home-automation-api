@@ -140,8 +140,18 @@ class SamsungTv(object):
     def voldown(self):
         self.sendKey("KEY_VOLDOWN")
 
-    def voldown(self):
-        self.sendKey("KEY_VOLDOWN")
+    def mute(self):
+        self.sendKey("KEY_MUTE")
+
+    def volupTimes(self, times):
+        for i in range(times):
+            self.volup()
+            time.sleep(0.25)
+
+    def voldownTimes(self, times):
+        for i in range(times):
+            self.voldown()
+            time.sleep(0.25)
 
     def sendAbcKids(self):
         self.sendKey("KEY_2")

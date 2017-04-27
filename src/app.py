@@ -23,13 +23,22 @@ app.permanent_session_lifetime = timedelta(seconds=15)
 tv_functions = {
     'hdmi': lambda tv: tv.sendHdmi(),
     'tv': lambda tv: tv.sendTv(),
-    'poweroff': lambda tv: tv.powerOff()
+    'poweroff': lambda tv: tv.powerOff(),
+    'volup': lambda tv: tv.volup(),
+    'voldown': lambda tv: tv.voldown(),
+    'mute': lambda tv: tv.mute(),
+    'abckidschannel':  lambda tv: tv.sendAbcKids(),
+}
+
+tv_functions_repeats = {
+    'volup': lambda tv, times: tv.volupTimes(times),
+    'voldown': lambda tv, times: tv.voldownTimes(times)
 }
 
 @auth.get_password
 def get_password(username):
     if username == auth_username:
-        return auth_username
+        return auth_password
     return None
 
 @auth.error_handler
@@ -42,7 +51,7 @@ def not_found(error):
 
 @app.route('/tv/command/<string:command>', methods=['POST'])
 @auth.login_required
-def change_tv_source(command):
+def run_tv_command(command):
     print('received tv command {}'.format(command))
     with tv.SamsungTv() as samsung_tv:
         if command in tv_functions:
@@ -51,5 +60,16 @@ def change_tv_source(command):
         else:
             return make_response(jsonify({'error': 'no mapping exists'}), 404)
 
+@app.route('/tv/command/<string:command>/<int:repeats>', methods=['POST'])
+@auth.login_required
+def run_tv_command_repeats(command, repeats):
+    print('received repeat tv command {} with repeats {}'.format(command, repeats))
+    with tv.SamsungTv() as samsung_tv:
+        if command in tv_functions_repeats:
+            tv_functions_repeats[command](samsung_tv, repeats)
+            return 'ok'
+        else:
+            return make_response(jsonify({'error': 'no mapping exists'}), 404)
+
 if __name__ == '__main__':
-    app.run()
+    app.run(host= '0.0.0.0')
