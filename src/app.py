@@ -23,6 +23,9 @@ app.permanent_session_lifetime = timedelta(seconds=15)
 tv_functions = {
     'hdmi': lambda tv: tv.sendHdmi(),
     'tv': lambda tv: tv.sendTv(),
+    'component': lambda tv: tv.sendComponent1(),
+    'source': lambda tv: tv.sendSource(),
+    'exit': lambda tv: tv.sendExit(),
     'poweroff': lambda tv: tv.powerOff(),
     'volup': lambda tv: tv.volup(),
     'voldown': lambda tv: tv.voldown(),
@@ -32,7 +35,10 @@ tv_functions = {
 
 tv_functions_repeats = {
     'volup': lambda tv, times: tv.volupTimes(times),
-    'voldown': lambda tv, times: tv.voldownTimes(times)
+    'voldown': lambda tv, times: tv.voldownTimes(times),
+    'channel': lambda tv, channelNumber: tv.changeChannel(channelNumber),
+    'keyup': lambda tv, times: tv.keyUpTimes(times),
+    'keydown': lambda tv, times: tv.keyDownTimes(times),
 }
 
 @auth.get_password

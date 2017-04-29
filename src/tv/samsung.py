@@ -153,9 +153,35 @@ class SamsungTv(object):
             self.voldown()
             time.sleep(0.25)
 
+    def changeChannel(self, channelNumber):
+        for digit in str(channelNumber):
+            self.sendKey("KEY_{}".format(digit))
+            time.sleep(0.25)
+        self.sendKey("KEY_ENTER")
+
+    def sendSource(self):
+        self.sendKey("KEY_SOURCE")
+
+    def sendExit(self):
+        self.sendKey("KEY_EXIT")
+
+    def keyUpTimes(self, times):
+        for i in range(times):
+            self.sendKey("KEY_UP")
+            time.sleep(0.25)
+        self.sendKey("KEY_ENTER")
+
+    def keyDownTimes(self, times):
+        for i in range(times):
+            self.sendKey("KEY_DOWN")
+            time.sleep(0.25)
+        self.sendKey("KEY_ENTER")
+
     def sendAbcKids(self):
         self.sendKey("KEY_2")
-        self.sendKey("KEY_3")
+        time.sleep(0.25)
+        self.sendKey("KEY_2")
+        time.sleep(0.25)
         self.sendKey("KEY_ENTER")
 
     def __exit__(self, exc_type, exc_value, traceback):
