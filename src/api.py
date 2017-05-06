@@ -78,7 +78,7 @@ def run_tv_command_repeats(command, repeats):
         else:
             return make_response(jsonify({'error': 'no mapping exists'}), 404)
 
-@app.route('/youtube/playlists', methods=['GET'])
+@app.route('/youtube/playlist', methods=['GET'])
 @auth.login_required
 def get_youtube_playlists():
     print('received youtube playlist request')
