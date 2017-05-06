@@ -12,6 +12,7 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
 import tv.samsung as tv
+import chromecast.youtube as youtube
 
 auth = HTTPBasicAuth()
 auth_username = os.environ.get("USERNAME")
@@ -76,6 +77,14 @@ def run_tv_command_repeats(command, repeats):
             return 'ok'
         else:
             return make_response(jsonify({'error': 'no mapping exists'}), 404)
+
+@app.route('/youtube/playlists', methods=['GET'])
+@auth.login_required
+def get_youtube_playlists():
+    print('received youtube playlist request')
+    youtubeClient = youtube.YoutubeClient()
+    playlists = youtubeClient.getPlaylist()
+    return make_response(jsonify(playlists), 200)
 
 if __name__ == '__main__':
     app.run(host= '0.0.0.0')
