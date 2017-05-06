@@ -8,6 +8,7 @@ API that sends signals to television via IP to change channels, input sources an
 - pip ([here](https://pip.pypa.io/en/stable/installing/) OR [via homebrew](https://brew.sh/))
 - `pip install pip-tools` [pip-tools](https://github.com/nvie/pip-tools)
 - `pip install virtualenv` [virtualenv](https://virtualenv.pypa.io/en/stable/)
+- A google oauth2 client secret file. See [README](src/auth/README.md) for more instructions.
 
 ### VirtualEnv and install dependencies
 

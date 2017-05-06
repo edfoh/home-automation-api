@@ -24,4 +24,5 @@ class YoutubeClient(object):
 
     def getPlaylist(self):
         result = self.Service.playlists().list(part="snippet",mine=True).execute()
-        return list(x["snippet"]["title"] for x in result["items"])
+        items = list(x["snippet"]["title"] for x in result["items"])
+        return { 'playlist': items }
