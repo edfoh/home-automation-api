@@ -94,6 +94,7 @@ ENV/
 lib/
 myenv/
 
+*.pkl
 .env
 client_secret.json
 google-user-oauth2.json

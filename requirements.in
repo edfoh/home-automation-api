@@ -4,3 +4,4 @@ flask-httpauth
 requests
 httplib2
 google-api-python-client
+pychromecast

@@ -13,13 +13,17 @@ load_dotenv(find_dotenv())
 
 import tv.samsung as tv
 import chromecast.youtube as youtube
+import chromecast.cast as cast
+import chromecast.playlistState as state
 
 auth = HTTPBasicAuth()
 auth_username = os.environ.get("USERNAME")
 auth_password = os.environ.get("PASSWORD")
 
+#chromecast = cast.Chromecast()
+
 app = Flask("ed-home-automation")
-app.permanent_session_lifetime = timedelta(seconds=15)
+app.permanent_session_lifetime = timedelta(seconds=30)
 
 tv_functions = {
     'hdmi': lambda tv: tv.sendHdmi(),
@@ -85,6 +89,28 @@ def get_youtube_playlists():
     youtubeClient = youtube.YoutubeClient()
     playlists = youtubeClient.getPlaylist()
     return make_response(jsonify(playlists), 200)
+
+@app.route('/chromecast/play/playlist/<string:name>', methods=['POST'])
+@auth.login_required
+def chromecast_play_first_in_playlist(name):
+    print('received play first video in youtube playlist request')
+    youtubeClient = youtube.YoutubeClient()
+    playlistState = youtubeClient.getPlaylistStateForFirstVideoInPlaylist(name)
+    if playlistState == None:
+        return make_response(jsonify({'error': 'could not find playlist'}), 400)
+    else:
+        playlistState.save()
+        chromecast = cast.Chromecast()
+        chromecast.play(playlistState.url)
+        return make_response(jsonify({'action': 'playing' }), 200)
+
+@app.route('/chromecast/stop', methods=['POST'])
+@auth.login_required
+def chromecast_stop():
+    print('received stop chromecast')
+    chromecast = cast.Chromecast()
+    chromecast.stop()
+    return make_response(jsonify({'action': 'stopped' }), 200)
 
 if __name__ == '__main__':
     app.run(host= '0.0.0.0')
