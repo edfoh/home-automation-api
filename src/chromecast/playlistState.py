@@ -42,6 +42,9 @@ class PlaylistState(object):
     def previous_page_token(self):
         return self._previous_page_token
 
+    def is_populated(self):
+        return self._name != None or self._name != ""
+
     def nextItemRequiresPaging(self):
         currentIndex = int(self._playlist_position / 5)
         newIndex = int(self._playlist_position + 1 / 5)

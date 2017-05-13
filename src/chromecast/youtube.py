@@ -4,6 +4,7 @@ sys.path.insert(0, './lib')
 import subprocess
 import httplib2
 import os
+from datetime import datetime
 import chromecast.playlistState as state
 
 from apiclient.discovery import build
@@ -26,8 +27,9 @@ class YoutubeClient(object):
             http=credentials.authorize(httplib2.Http()))
 
     def getPlaylist(self):
-        playlistItems = self._getPlaylist()
-        playlistTitles = list(x["snippet"]["title"] for x in playlistItems)
+        playlistResult = self._getPlaylist()
+        playlistsItems = playlistResult["items"]
+        playlistTitles = list(x["snippet"]["title"] for x in playlistsItems)
         return { 'playlist': playlistTitles }
 
     def getPlaylistStateForFirstVideoInPlaylist(self, playlistName):
@@ -43,9 +45,7 @@ class YoutubeClient(object):
     def getPlaylistStateForNextVideoInPlaylist(self):
         playlistState = state.PlaylistState()
         playlistState.restore()
-        if playlistState.name == None:
-            return None
-        else:
+        if playlistState.is_populated():
             print('finding next item in playlist')
             nextPosition = playlistState.currently_playing_position + 1
             if nextPosition == playlistState.total_results:
@@ -53,6 +53,8 @@ class YoutubeClient(object):
                 return None
             pageToken = playlistState.next_page_token if playlistState.nextItemRequiresPaging() else None
             return self._findSelectedPlaylistItem(playlistState.name, playlistState.id, nextPosition, pageToken)
+        else:
+            return None
 
     def _findSelectedPlaylistItem(self, playlistName, playlistId, itemPosition, pageToken = None):
         playlistItemsResult = self._getPlaylistItems(playlistId, pageToken)
