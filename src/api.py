@@ -20,7 +20,7 @@ auth = HTTPBasicAuth()
 auth_username = os.environ.get("USERNAME")
 auth_password = os.environ.get("PASSWORD")
 
-#chromecast = cast.Chromecast()
+chromecast = cast.Chromecast()
 
 app = Flask("ed-home-automation")
 app.permanent_session_lifetime = timedelta(seconds=30)
@@ -100,7 +100,6 @@ def chromecast_play_first_in_playlist(name):
         return make_response(jsonify({'error': 'could not find playlist'}), 400)
     else:
         playlistState.save()
-        chromecast = cast.Chromecast()
         chromecast.play(playlistState.url)
         return make_response(jsonify({'action': 'playing' }), 200)
 
@@ -108,7 +107,6 @@ def chromecast_play_first_in_playlist(name):
 @auth.login_required
 def chromecast_stop():
     print('received stop chromecast')
-    chromecast = cast.Chromecast()
     chromecast.stop()
     return make_response(jsonify({'action': 'stopped' }), 200)
 
