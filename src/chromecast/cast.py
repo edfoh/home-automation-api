@@ -13,7 +13,7 @@ class Chromecast(object):
         cc.media_controller.register_status_listener(self)
         self._playing_url = None
 
-    def play(self, url):
+    def play_video(self, url):
         cc = self._getChromecast()
         mc = cc.media_controller
         mc.play_media(url, 'video/mp4')
@@ -27,6 +27,35 @@ class Chromecast(object):
         self._datetime_played = None
         self._playing_url = None
         cc.quit_app()
+
+    def pause(self):
+        cc = self._getChromecast()
+        mc = cc.media_controller
+        if mc.status.player_is_playing:
+            mc.pause()
+            mc.block_until_active()
+            return True
+        else:
+            return False
+
+    def play(self):
+        cc = self._getChromecast()
+        mc = cc.media_controller
+        if mc.status.player_is_paused:
+            mc.okay()
+            mc.block_until_active()
+            return True
+        else:
+            return False
+
+    def resume(self):
+        youtubeClient = youtube.YoutubeClient()
+        playlistState = youtubeClient.getCurrentPlaylistState()
+        if playlistState != None:
+            self.play(playlistState.url)
+            return True
+        else
+            return False
 
     def _getChromecast(self):
         cc = next(cc for cc in pychromecast.get_chromecasts() if cc.device.friendly_name == self.ChromeCastName)

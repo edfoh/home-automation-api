@@ -100,7 +100,7 @@ def chromecast_play_first_in_playlist(name):
         return make_response(jsonify({'error': 'could not find playlist'}), 400)
     else:
         playlistState.save()
-        chromecast.play(playlistState.url)
+        chromecast.play_video(playlistState.url)
         return make_response(jsonify({'action': 'playing' }), 200)
 
 @app.route('/chromecast/stop', methods=['POST'])
@@ -109,6 +109,36 @@ def chromecast_stop():
     print('received stop chromecast')
     chromecast.stop()
     return make_response(jsonify({'action': 'stopped' }), 200)
+
+@app.route('/chromecast/pause', methods=['POST'])
+@auth.login_required
+def chromecast_pause():
+    print('received pause chromecast')
+    success = chromecast.pause()
+    if success:
+        return make_response(jsonify({'action': 'paused' }), 200)
+    else:
+        return make_response(jsonify({'message': 'no media is playing }), 400)
+
+@app.route('/chromecast/play', methods=['POST'])
+@auth.login_required
+def chromecast_play():
+    print('received play chromecast')
+    success = chromecast.play()
+    if success:
+        return make_response(jsonify({'action': 'playing' }), 200)
+    else:
+        return make_response(jsonify({'message': 'no media is paused' }), 400)
+
+@app.route('/chromecast/resume', methods=['POST'])
+@auth.login_required
+def chromecast_pause():
+    print('received resume chromecast')
+    success = chromecast.resume()
+    if success:
+        return make_response(jsonify({'action': 'resumed' }), 200)
+    else:
+        return make_response(jsonify({'message': 'no previous playlist was found' }), 400)
 
 if __name__ == '__main__':
     app.run(host= '0.0.0.0')

@@ -56,6 +56,14 @@ class YoutubeClient(object):
         else:
             return None
 
+    def getCurrentPlaylistState(self):
+        playlistState = state.PlaylistState()
+        playlistState.restore()
+        if playlistState.is_populated():
+            return playlistState
+        else:
+            return None
+
     def _findSelectedPlaylistItem(self, playlistName, playlistId, itemPosition, pageToken = None):
         playlistItemsResult = self._getPlaylistItems(playlistId, pageToken)
         playlistItems = playlistItemsResult["items"]
