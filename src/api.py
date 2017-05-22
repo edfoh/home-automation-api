@@ -23,7 +23,7 @@ auth_password = os.environ.get("PASSWORD")
 chromecast = cast.Chromecast()
 
 app = Flask("ed-home-automation")
-app.permanent_session_lifetime = timedelta(seconds=30)
+app.permanent_session_lifetime = timedelta(seconds=60)
 
 tv_functions = {
     'hdmi': lambda tv: tv.sendHdmi(),
