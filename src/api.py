@@ -118,7 +118,7 @@ def chromecast_pause():
     if success:
         return make_response(jsonify({'action': 'paused' }), 200)
     else:
-        return make_response(jsonify({'message': 'no media is playing }), 400)
+        return make_response(jsonify({'message': 'no media is playing' }), 400)
 
 @app.route('/chromecast/play', methods=['POST'])
 @auth.login_required
