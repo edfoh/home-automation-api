@@ -132,13 +132,33 @@ def chromecast_play():
 
 @app.route('/chromecast/resume', methods=['POST'])
 @auth.login_required
-def chromecast_pause():
+def chromecast_resume():
     print('received resume chromecast')
     success = chromecast.resume()
     if success:
         return make_response(jsonify({'action': 'resumed' }), 200)
     else:
         return make_response(jsonify({'message': 'no previous playlist was found' }), 400)
+
+@app.route('/chromecast/play/next', methods=['POST'])
+@auth.login_required
+def chromecast_resume():
+    print('received play next chromecast')
+    success = chromecast.play_next()
+    if success:
+        return make_response(jsonify({'action': 'playing next' }), 200)
+    else:
+        return make_response(jsonify({'message': 'no media is playing' }), 400)
+
+@app.route('/chromecast/play/previous', methods=['POST'])
+@auth.login_required
+def chromecast_resume():
+    print('received play previous chromecast')
+    success = chromecast.play_previous()
+    if success:
+        return make_response(jsonify({'action': 'playing previous' }), 200)
+    else:
+        return make_response(jsonify({'message': 'no media is playing' }), 400)
 
 if __name__ == '__main__':
     app.run(host= '0.0.0.0')

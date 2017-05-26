@@ -56,6 +56,20 @@ class YoutubeClient(object):
         else:
             return None
 
+    def getPlaylistStateForPreviousVideoInPlaylist(self):
+        playlistState = state.PlaylistState()
+        playlistState.restore()
+        if playlistState.is_populated():
+            print('finding previous item in playlist')
+            prevPosition = playlistState.currently_playing_position - 1
+            if prevPosition <= 0:
+                print("reached start of playlist")
+                return None
+            pageToken = playlistState.previous_page_token if playlistState.previousItemRequiresPaging() else None
+            return self._findSelectedPlaylistItem(playlistState.name, playlistState.id, prevPosition, pageToken)
+        else:
+            return None
+
     def getCurrentPlaylistState(self):
         playlistState = state.PlaylistState()
         playlistState.restore()

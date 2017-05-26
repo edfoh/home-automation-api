@@ -50,6 +50,11 @@ class PlaylistState(object):
         newIndex = int(self._playlist_position + 1 / 5)
         return currentIndex != newIndex
 
+    def previousItemRequiresPaging(self):
+        currentIndex = int(self._playlist_position / 5)
+        newIndex = int(self._playlist_position - 1 / 5)
+        return currentIndex != newIndex
+
     def save(self):
         with open('playlist_state.pkl', 'wb') as output:
             pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
