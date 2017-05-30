@@ -114,21 +114,15 @@ def chromecast_stop():
 @auth.login_required
 def chromecast_pause():
     print('received pause chromecast')
-    success = chromecast.pause()
-    if success:
-        return make_response(jsonify({'action': 'paused' }), 200)
-    else:
-        return make_response(jsonify({'message': 'no media is playing' }), 400)
+    chromecast.pause()
+    return make_response(jsonify({'action': 'paused' }), 200)
 
 @app.route('/chromecast/play', methods=['POST'])
 @auth.login_required
 def chromecast_play():
     print('received play chromecast')
-    success = chromecast.play()
-    if success:
-        return make_response(jsonify({'action': 'playing' }), 200)
-    else:
-        return make_response(jsonify({'message': 'no media is paused' }), 400)
+    chromecast.play()
+    return make_response(jsonify({'action': 'playing' }), 200)
 
 @app.route('/chromecast/resume', methods=['POST'])
 @auth.login_required
@@ -142,7 +136,7 @@ def chromecast_resume():
 
 @app.route('/chromecast/play/next', methods=['POST'])
 @auth.login_required
-def chromecast_resume():
+def chromecast_play_next():
     print('received play next chromecast')
     success = chromecast.play_next()
     if success:
@@ -152,13 +146,27 @@ def chromecast_resume():
 
 @app.route('/chromecast/play/previous', methods=['POST'])
 @auth.login_required
-def chromecast_resume():
+def chromecast_play_previous():
     print('received play previous chromecast')
     success = chromecast.play_previous()
     if success:
         return make_response(jsonify({'action': 'playing previous' }), 200)
     else:
         return make_response(jsonify({'message': 'no media is playing' }), 400)
+
+@app.route('/chromecast/playlist/info', methods=['GET'])
+@auth.login_required
+def chromecast_info():
+    print('received get playlist info chromecast')
+    info = chromecast.playlist_info()
+    return make_response(jsonify({'info': info }), 200)
+
+@app.route('/chromecast/status', methods=['GET'])
+@auth.login_required
+def chromecast_status():
+    print('received media status chromecast')
+    status = chromecast.media_status()
+    return make_response(str(status), 200)
 
 if __name__ == '__main__':
     app.run(host= '0.0.0.0')

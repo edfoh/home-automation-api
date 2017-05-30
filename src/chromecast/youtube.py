@@ -96,7 +96,7 @@ class YoutubeClient(object):
         return state.PlaylistState(
             playlistId,
             name,
-            selectedVideoUrl,
+            selectedVideoUrl.rstrip(),
             selectedPlaylistItem["snippet"]["position"],
             playlistItemsResult["pageInfo"]["totalResults"],
             playlistItemsResult.get("nextPageToken"),

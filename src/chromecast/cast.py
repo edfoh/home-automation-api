@@ -12,6 +12,8 @@ class Chromecast(object):
         cc = self._getChromecast()
         cc.media_controller.register_status_listener(self)
         self._playing_url = None
+        self._datetime_played = None
+        self._current_media_controller = None
 
     def play_video(self, url):
         cc = self._getChromecast()
@@ -20,41 +22,33 @@ class Chromecast(object):
         mc.block_until_active()
         self._datetime_played = datetime.now()
         self._playing_url = url
+        self._current_media_controller = mc
         return mc.status
 
     def stop(self):
         cc = self._getChromecast()
         self._datetime_played = None
         self._playing_url = None
+        self._current_media_controller = None
         cc.quit_app()
 
     def pause(self):
-        cc = self._getChromecast()
-        mc = cc.media_controller
-        if mc.status.player_is_playing:
-            mc.pause()
-            mc.block_until_active()
-            return True
-        else:
-            return False
+        if self._current_media_controller != None:
+            self._current_media_controller.pause()
 
     def play(self):
-        cc = self._getChromecast()
-        mc = cc.media_controller
-        if mc.status.player_is_paused:
-            mc.okay()
-            mc.block_until_active()
-            return True
-        else:
-            return False
+        if self._current_media_controller != None:
+            self._current_media_controller.play()
 
     def play_next(self):
         cc = self._getChromecast()
         mc = cc.media_controller
-        if mc.status.player_is_playing:
+        if self._is_playing():
             youtubeClient = youtube.YoutubeClient()
             playlistState = youtubeClient.getPlaylistStateForNextVideoInPlaylist()
+            print("found playlist state")
             if playlistState != None:
+                self.stop()
                 print('playing next in playlist')
                 self.play_video(playlistState.url)
                 playlistState.save()
@@ -67,10 +61,11 @@ class Chromecast(object):
     def play_previous(self):
         cc = self._getChromecast()
         mc = cc.media_controller
-        if mc.status.player_is_playing:
+        if self._is_playing():
             youtubeClient = youtube.YoutubeClient()
             playlistState = youtubeClient.getPlaylistStateForPreviousVideoInPlaylist()
             if playlistState != None:
+                self.stop()
                 print('playing previous in playlist')
                 self.play_video(playlistState.url)
                 playlistState.save()
@@ -88,6 +83,28 @@ class Chromecast(object):
             return True
         else:
             return False
+
+    def playlist_info(self):
+        youtubeClient = youtube.YoutubeClient()
+        playlistState = youtubeClient.getCurrentPlaylistState()
+        return {
+            'playlist_id': playlistState.id,
+            'playlist_name': playlistState.name,
+            'playlist_url': playlistState.url,
+            'playlist_position': playlistState.currently_playing_position,
+            'playlist_total_results': playlistState.total_results,
+            'chromecast_playing_url': self._playing_url,
+            'chromecast_datetime_played': self._datetime_played
+        }
+
+    def media_status(self):
+        if self._current_media_controller != None:
+            return self._current_media_controller.status
+        else:
+            return "Nothing playing"
+
+    def _is_playing(self):
+        return self._playing_url != None
 
     def _getChromecast(self):
         cc = next(cc for cc in pychromecast.get_chromecasts() if cc.device.friendly_name == self.ChromeCastName)

@@ -66,7 +66,7 @@ class PlaylistState(object):
                 restored = pickle.load(input)
                 self._id = restored.id
                 self._name = restored.name
-                self._url = restored.url
+                self._url = restored.url.rstrip()
                 self._playlist_position = restored.currently_playing_position
                 self._total_results = restored.total_results
                 self._next_page_token = restored.next_page_token
